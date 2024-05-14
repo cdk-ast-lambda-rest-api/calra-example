@@ -6,7 +6,7 @@ from aws_cdk import (
     aws_lambda_python_alpha as _lambda_python,
     aws_apigateway as apigateway,
 )
-from calra_cdk import resource_builder
+from calra_cdk import ResourceBuilder
 from constructs import Construct
 
 class CalraExampleStack(Stack):
@@ -14,7 +14,7 @@ class CalraExampleStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        builder = resource_builder.class_name()
+        builder = ResourceBuilder()
         lambda_path = 'lambdas'
 
         restapi = apigateway.RestApi(
@@ -24,10 +24,11 @@ class CalraExampleStack(Stack):
 
         layer = _lambda_python.PythonLayerVersion(
             self, "calra-lambda",
-            entry="./layers",
+            entry="./layers/calra_lambda",
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_10, _lambda.Runtime.PYTHON_3_11]
         )
         builder.add_common_layer(layer)
+
 
         default_role = iam.Role(
             self, "calra-role",
@@ -44,4 +45,4 @@ class CalraExampleStack(Stack):
         builder.add_custom_environment("DB_NAME_CATS", "cats")
         builder.add_custom_environment("DB_NAME_DOGS", "dogs")
 
-        builder.create_lbd_rest_stack(self, root_resource, lambda_path, print_tree=True)
+        builder.build(self, root_resource, lambda_path, print_tree=True)
