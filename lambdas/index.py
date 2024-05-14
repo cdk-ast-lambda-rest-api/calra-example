@@ -1,5 +1,6 @@
 from calra_lambda import *
 import json
+import os
 
 @GET('/dogs')
 @runtime('python3.11')
@@ -23,7 +24,7 @@ def cat_handler(event, context):
     response = {
         'statusCode': 200,
         'body': json.dumps({
-            'message': 'Hello from cats handler GET'
+            'message': f"Hello from cats handler GET. There is a custom environment called DB_NAME_CATS of value.. {os.environ['DB_NAME_CATS']}"
         })
     }
     return response
