@@ -22,23 +22,6 @@ class CalraExampleStack(Stack):
             rest_api_name= 'calra-restApi')
         root_resource = restapi.root
 
-        layer = _lambda_python.PythonLayerVersion(
-            self, "calra-lambda",
-            entry="./layers/calra_lambda",
-            compatible_runtimes=[_lambda.Runtime.PYTHON_3_10, _lambda.Runtime.PYTHON_3_11]
-        )
-        builder.add_common_layer(layer)
-
-
-        default_role = iam.Role(
-            self, "calra-role",
-            assumed_by= iam.ServicePrincipal('lambda.amazonaws.com'),
-            managed_policies= [
-                iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')            
-            ]
-        )
-        builder.set_default_role(default_role)
-
         builder.set_default_timeout(Duration.seconds(60))
         builder.set_default_runtime(_lambda.Runtime.PYTHON_3_10)
         builder.add_common_environment("URL", "http://example.com")
